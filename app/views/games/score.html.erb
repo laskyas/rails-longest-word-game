@@ -1,4 +1,5 @@
-<div class="container">
+<div class="container result">
   <h1>Result</h1>
-  <%= @json['found'] %>
+  <p>Your guess <%= @word %> is <%= @message %></p>
+  <%= link_to 'Play again', '/new' %>
 </div>

@@ -10,20 +10,30 @@ class GamesController < ApplicationController
   def score
     @word = params[:word]
     @letters = params[:letters]
-
-
-    # word cannot be built out of the original grid
-    if
-
-
-
-    # word is valid according to the grid, but is not a valid English word
-
-    # word is valid according to the grid and is an English word
-
-    response = open("https://wagon-dictionary.herokuapp.com/#{@word}")
-    @json = JSON.parse(response.read)
-
+    @message = score_and_message(@word, @letters)
   end
 
+  private
+
+  def included?(guess, grid)
+    guess.chars.all? { |letter| guess.count(letter) <= grid.count(letter) }
+  end
+
+  def score_and_message(attempt, grid)
+    if included?(attempt.upcase, grid)
+      if english_word?(attempt)
+        "well done"
+      else
+        "not an english word"
+      end
+    else
+      "not in the grid"
+    end
+  end
+
+  def english_word?(word)
+    response = open("https://wagon-dictionary.herokuapp.com/#{word}")
+    json = JSON.parse(response.read)
+    json['found']
+  end
 end
